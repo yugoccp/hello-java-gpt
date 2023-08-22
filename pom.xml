@@ -5,7 +5,7 @@
     <artifactId>hello-java-gpt</artifactId>
     <version>0.0.1</version>
     <name>Hello Java GPT</name>
-    <description>The power of AI in your App!</description>
+    <description>The power of Generative AI in your App!</description>
     <packaging>jar</packaging>
 
     <properties>

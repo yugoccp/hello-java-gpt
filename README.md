@@ -1,6 +1,6 @@
-# tcdb-cli
+# Hello Java GPT
 
-TCDB CLI is a Command Line to help you generate your Celebrity Statement with the help of AI!
+Use the power of Generative AI with Java!
 
 ## Requirements
 - Java 17
@@ -11,18 +11,11 @@ TCDB CLI is a Command Line to help you generate your Celebrity Statement with th
 
 1. Create a copy of `config.properties.example` and rename to `config.properties`
 2. Fill the `config.properties` file with the OpenAI API token and organization ID
-3. Run the following command:
-```
-java -cp './bin/tcdb-cli-0.0.1.jar' org.yugoccp.samples.TcdbCli <INPUT_TEXT> -c ./config.properties
-```
-
-If you want to read the input from a text file, run the following command:
-```
-java -cp "./bin/tcdb-cli-0.0.1.jar" org.yugoccp.samples.TcdbCli -c config.properties "$(< <TEXT_FILE_PATH>)"
-```
-
-## Build
-To build the application, run the following command:
+3. Build the application from the source code:
 ```
 mvn clean package
+```
+4. Run the following command:
+```
+java -cp './target/hello-java-gpt-cli-0.0.1.jar' org.yugoccp.samples.JavaGPT ./config.properties
 ```
