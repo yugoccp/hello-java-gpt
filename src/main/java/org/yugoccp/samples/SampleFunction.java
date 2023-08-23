@@ -3,17 +3,20 @@ package org.yugoccp.samples;
 import com.azure.ai.openai.OpenAIAsyncClient;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.SKBuilders;
-import com.microsoft.semantickernel.orchestration.SKContext;
+import com.microsoft.semantickernel.orchestration.ContextVariables;
 import com.microsoft.semantickernel.semanticfunctions.PromptTemplateConfig;
 import com.microsoft.semantickernel.textcompletion.CompletionSKFunction;
-import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 public class SampleFunction {
     private final CompletionSKFunction myFunction;
+    private final Kernel myKernel;
+    private String contextHistory = "";
 
     public SampleFunction(OpenAIAsyncClient client) {
-        var kernel = getKernel(client);
-        this.myFunction = buildFunction(kernel);
+        this.myKernel = getKernel(client);
+        this.myFunction = buildFunction(myKernel);
     }
 
     private Kernel getKernel(OpenAIAsyncClient client) {
@@ -28,11 +31,12 @@ public class SampleFunction {
     private CompletionSKFunction buildFunction(Kernel kernel) {
 
         String semanticFunctionInline = """
-            You're the best cover of Michael Jackson.
-            Every answer you give is completed with a reference of some Michael Jackson famous quote. 
-    
-            {{$input}}
-            """;
+                ChatBot can have a conversation with you about any topic.
+                It can give concise answers or say 'I don't know' if it does not have an answer.
+                    
+                {{$history}}
+                User: {{$input}}
+                ChatBot:""";
 
         var promptConfig = new PromptTemplateConfig(
                 new PromptTemplateConfig.CompletionConfigBuilder()
@@ -49,7 +53,19 @@ public class SampleFunction {
                 .build();
     }
 
-    public Mono<SKContext> run(String inputText) {
-        return myFunction.invokeAsync(inputText);
+    public String run(String inputText) {
+
+        var newContext = ContextVariables.builder()
+                .withVariable("history", contextHistory)
+                .withVariable("input", inputText)
+                .build();
+
+        var skContext = myKernel.runAsync(newContext, myFunction);
+        var result = Objects.requireNonNull(skContext.block()).getResult();
+
+        contextHistory =  contextHistory + String.format("\\nUser: %s\\nChatBot: %s\\n", inputText, result);
+
+        return result;
     }
+
 }

@@ -33,8 +33,8 @@ public class JavaGPT {
         var inputText = reader.readLine();
 
         while (!inputText.equals("exit")) {
-            Mono<SKContext> result = sampleFunction.run(inputText);
-            System.out.println(Objects.requireNonNull(result.block()).getResult());
+            var result = sampleFunction.run(inputText);
+            System.out.println(result);
 
             System.out.println("Resposta (digite 'exit' para sair): ");
             inputText = reader.readLine();
