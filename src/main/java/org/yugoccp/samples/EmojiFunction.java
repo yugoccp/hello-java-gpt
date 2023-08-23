@@ -8,13 +8,14 @@ import com.microsoft.semantickernel.semanticfunctions.PromptTemplateConfig;
 import com.microsoft.semantickernel.textcompletion.CompletionSKFunction;
 
 import java.util.Objects;
+import java.util.function.Function;
 
-public class SampleFunction {
+public class EmojiFunction implements Function<String, String>{
     private final CompletionSKFunction myFunction;
     private final Kernel myKernel;
     private String contextHistory = "";
 
-    public SampleFunction(OpenAIAsyncClient client) {
+    public EmojiFunction(OpenAIAsyncClient client) {
         this.myKernel = getKernel(client);
         this.myFunction = buildFunction(myKernel);
     }
@@ -32,7 +33,7 @@ public class SampleFunction {
 
         String semanticFunctionInline = """
                 ChatBot can have a conversation with you about any topic.
-                It can give concise answers or say 'I don't know' if it does not have an answer.
+                It can give concise answers but only using emoji.
                     
                 {{$history}}
                 User: {{$input}}
@@ -53,7 +54,7 @@ public class SampleFunction {
                 .build();
     }
 
-    public String run(String inputText) {
+    public String apply(String inputText) {
 
         var newContext = ContextVariables.builder()
                 .withVariable("history", contextHistory)
