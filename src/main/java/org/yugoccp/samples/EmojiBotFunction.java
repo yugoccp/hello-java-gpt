@@ -10,12 +10,11 @@ import com.microsoft.semantickernel.textcompletion.CompletionSKFunction;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class EmojiFunction implements Function<String, String>{
+public class EmojiBotFunction implements Function<String, String>{
     private final CompletionSKFunction myFunction;
     private final Kernel myKernel;
-    private String contextHistory = "";
 
-    public EmojiFunction(OpenAIAsyncClient client) {
+    public EmojiBotFunction(OpenAIAsyncClient client) {
         this.myKernel = getKernel(client);
         this.myFunction = buildFunction(myKernel);
     }
@@ -42,7 +41,7 @@ public class EmojiFunction implements Function<String, String>{
         var promptConfig = new PromptTemplateConfig(
                 new PromptTemplateConfig.CompletionConfigBuilder()
                         .maxTokens(100)
-                        .temperature(0.3)
+                        .temperature(0.6)
                         .topP(1)
                         .build());
 
@@ -55,18 +54,8 @@ public class EmojiFunction implements Function<String, String>{
     }
 
     public String apply(String inputText) {
-
-        var newContext = ContextVariables.builder()
-                .withVariable("history", contextHistory)
-                .withVariable("input", inputText)
-                .build();
-
-        var skContext = myKernel.runAsync(newContext, myFunction);
-        var result = Objects.requireNonNull(skContext.block()).getResult();
-
-        contextHistory =  contextHistory + String.format("\\nUser: %s\\nChatBot: %s\\n", inputText, result);
-
-        return result;
+        var skContext = myFunction.invokeAsync(inputText);
+        return Objects.requireNonNull(skContext.block()).getResult();
     }
 
 }

@@ -10,12 +10,12 @@ import com.microsoft.semantickernel.textcompletion.CompletionSKFunction;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class ChatFunction implements Function<String, String> {
+public class JavaBotFunction implements Function<String, String>{
     private final CompletionSKFunction myFunction;
     private final Kernel myKernel;
     private String contextHistory = "";
 
-    public ChatFunction(OpenAIAsyncClient client) {
+    public JavaBotFunction(OpenAIAsyncClient client) {
         this.myKernel = getKernel(client);
         this.myFunction = buildFunction(myKernel);
     }
@@ -32,17 +32,19 @@ public class ChatFunction implements Function<String, String> {
     private CompletionSKFunction buildFunction(Kernel kernel) {
 
         String semanticFunctionInline = """
-                ChatBot can have a conversation with you about any topic.
-                It can give concise answers or say 'I don't know' if it does not have an answer.
+                JavaBot is a Java technology expert and can answer any questions regarding to Java. 
+                JavaBot can have a conversation with you about any topic related to Java.
+                JavaBot always give a Java example for every answer it gives to you.
+                It can give concise answers or say 'Boo! That's not Java' if it does not have relation with Java.
                     
                 {{$history}}
                 User: {{$input}}
-                ChatBot:""";
+                JavaBot:""";
 
         var promptConfig = new PromptTemplateConfig(
                 new PromptTemplateConfig.CompletionConfigBuilder()
-                        .maxTokens(100)
-                        .temperature(0.3)
+                        .maxTokens(5000)
+                        .temperature(0.6)
                         .topP(1)
                         .build());
 
@@ -56,6 +58,7 @@ public class ChatFunction implements Function<String, String> {
 
     public String apply(String inputText) {
 
+        // Cria contexto para enviar memória da function
         var newContext = ContextVariables.builder()
                 .withVariable("history", contextHistory)
                 .withVariable("input", inputText)
@@ -64,7 +67,8 @@ public class ChatFunction implements Function<String, String> {
         var skContext = myKernel.runAsync(newContext, myFunction);
         var result = Objects.requireNonNull(skContext.block()).getResult();
 
-        contextHistory =  contextHistory + String.format("\\nUser: %s\\nChatBot: %s\\n", inputText, result);
+        // Atualiza histórico com o resultado da resposta
+        contextHistory = contextHistory + String.format("\\nUser: %s\\nJavaBot: %s\\n", inputText, result);
 
         return result;
     }
