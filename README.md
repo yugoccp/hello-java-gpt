@@ -17,12 +17,12 @@ Sample project to start using the power of Generative AI with Java!
 ```
 4. Run the EmojiBot with
 ```bash
-./mvnw exec:java -Dexec.mainClass="org.yugoccp.samples.EmojiBotGPT" -Dexec.args="./config.properties"
+./mvnw exec:java -D'exec.mainClass=org.yugoccp.samples.EmojiBotGPT' -D'exec.args=./config.properties'
 ```
 
 5. Or run the JavaBot with
 ```bash
-./mvnw exec:java -Dexec.mainClass="org.yugoccp.samples.JavaBotGPT" -Dexec.args="./config.properties"
+./mvnw exec:java -D'exec.mainClass=org.yugoccp.samples.JavaBotGPT' -D'exec.args=./config.properties'
 ```
 
 ## Reference
