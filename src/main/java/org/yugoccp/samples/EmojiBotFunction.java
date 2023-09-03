@@ -3,19 +3,17 @@ package org.yugoccp.samples;
 import com.azure.ai.openai.OpenAIAsyncClient;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.SKBuilders;
-import com.microsoft.semantickernel.orchestration.ContextVariables;
 import com.microsoft.semantickernel.semanticfunctions.PromptTemplateConfig;
 import com.microsoft.semantickernel.textcompletion.CompletionSKFunction;
 
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
-public class EmojiBotFunction implements Function<String, String>{
+public class EmojiBotFunction implements UnaryOperator<String> {
     private final CompletionSKFunction myFunction;
-    private final Kernel myKernel;
 
     public EmojiBotFunction(OpenAIAsyncClient client) {
-        this.myKernel = getKernel(client);
+        var myKernel = getKernel(client);
         this.myFunction = buildFunction(myKernel);
     }
 
@@ -31,17 +29,16 @@ public class EmojiBotFunction implements Function<String, String>{
     private CompletionSKFunction buildFunction(Kernel kernel) {
 
         String semanticFunctionInline = """
-                ChatBot can have a conversation with you about any topic.
-                It can give concise answers but only using emoji.
-                    
-                {{$history}}
+                EmojiBot is a movie expert and knows about the story and context of every existing movie around the world.
+                EmojiBot recognize any movie title and do the best to build a detailed movie plot only using emojis.
+                
                 User: {{$input}}
-                ChatBot:""";
+                EmojiBot:""";
 
         var promptConfig = new PromptTemplateConfig(
                 new PromptTemplateConfig.CompletionConfigBuilder()
-                        .maxTokens(100)
-                        .temperature(0.6)
+                        .maxTokens(1000)
+                        .temperature(0.8)
                         .topP(1)
                         .build());
 

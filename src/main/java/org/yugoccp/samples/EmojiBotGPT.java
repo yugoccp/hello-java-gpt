@@ -22,24 +22,25 @@ public class EmojiBotGPT {
 
     public static void main(String[] args) throws IOException {
 
-        // Busca o arquivo com as configurações de acesso para o OpenAI para criar o cliente de acesso
+        // Build client with config file settings
         var configFile = new File(args[0]);
         var client = getClient(List.of(configFile));
 
-        // Contrói a function de Emoji utilizando o client do OpenAI
+        // Build function using OpenAI client
         var sampleFunction = new EmojiBotFunction(client);
 
+        // Use function to interact with user inputs
         var reader = new BufferedReader(new InputStreamReader(System.in));
-
-        // Inicia a aplicação utilizando a function e imprime o resultado
-        System.out.println("\n> Escreva o nome de um filme (digite 'sair' para sair):\n");
+        System.out.println("\n> Write a movie name (type 'exit' to exit):\n");
         var inputText = reader.readLine();
 
-        while (!inputText.equals("sair")) {
+        while (!inputText.equals("exit")) {
             var result = sampleFunction.apply(inputText);
+
             System.out.println(result);
 
-            System.out.println("\n> Escreva o nome de um filme (digite 'sair' para sair):\n");
+            System.out.println("\n> Write a movie name (type 'exit' to exit):\n");
+
             inputText = reader.readLine();
         }
     }

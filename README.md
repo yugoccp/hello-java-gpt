@@ -15,12 +15,12 @@ Sample project to start using the power of Generative AI with Java!
 ```bash
 ./mvnw clean package
 ```
-4. Run the EmojiBot with
+4. Run the EmojiBot example with
 ```bash
 ./mvnw exec:java -D'exec.mainClass=org.yugoccp.samples.EmojiBotGPT' -D'exec.args=./config.properties'
 ```
 
-5. Or run the JavaBot with
+5. Or run the JavaBot example with
 ```bash
 ./mvnw exec:java -D'exec.mainClass=org.yugoccp.samples.JavaBotGPT' -D'exec.args=./config.properties'
 ```
