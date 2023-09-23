@@ -20,9 +20,9 @@ Sample project to start using the power of Generative AI with Java!
 ./mvnw exec:java -D'exec.mainClass=org.yugoccp.samples.EmojiBotGPT' -D'exec.args=./config.properties'
 ```
 
-5. Or run the JavaBot example with
+5. Or run the TextBot example with
 ```bash
-./mvnw exec:java -D'exec.mainClass=org.yugoccp.samples.JavaBotGPT' -D'exec.args=./config.properties'
+./mvnw exec:java -D'exec.mainClass=org.yugoccp.samples.TextBotGPT' -D'exec.args=./config.properties <TEXT FILE PATH>'
 ```
 
 ## Reference

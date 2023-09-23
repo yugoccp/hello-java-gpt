@@ -10,40 +10,37 @@ import com.microsoft.semantickernel.textcompletion.CompletionSKFunction;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-public class JavaBotFunction implements UnaryOperator<String> {
+public class TextBotFunction implements UnaryOperator<String> {
     private final CompletionSKFunction myFunction;
     private final Kernel myKernel;
     private String contextHistory = "";
 
-    public JavaBotFunction(OpenAIAsyncClient client) {
-        this.myKernel = getKernel(client);
-        this.myFunction = buildFunction(myKernel);
+    public TextBotFunction(OpenAIAsyncClient client, String text) {
+        this.myKernel = SkUtils.getChatCompletionKernel(client, "gpt-3.5-turbo-16k");
+        this.myFunction = buildFunction(myKernel, text);
     }
 
-    private Kernel getKernel(OpenAIAsyncClient client) {
-        return SKBuilders.kernel()
-                .withDefaultAIService(SKBuilders.chatCompletion()
-                        .setModelId("gpt-4")
-                        .withOpenAIClient(client)
-                        .build())
-                .build();
-    }
+    private CompletionSKFunction buildFunction(Kernel kernel, String text) {
 
-    private CompletionSKFunction buildFunction(Kernel kernel) {
-
-        String semanticFunctionInline = """
-                JavaBot is a Java technology expert and can answer any questions regarding to Java. 
-                JavaBot can have a conversation with you about any topic related to Java.
-                JavaBot always give a Java example for every answer it gives to you.
-                JavaBot can give concise answers or say 'Boo! That's not Java' if it does not have relation with Java.
+        var semanticFunctionInline = """
+                TextBot can have a conversation with you only about the text below.
+                TextBot summarizes answers in less than 100 words.
+                TextBot can only give answers of something related to the text below or say 'I don't know' if it does not have an answer.
+                
+                
+                --- TEXT START ---
+                
+                %s
+                
+                --- TEXT END ---           
                     
                 {{$history}}
                 User: {{$input}}
-                JavaBot:""";
+                TextBot:""".formatted(text);
 
         var promptConfig = new PromptTemplateConfig(
                 new PromptTemplateConfig.CompletionConfigBuilder()
-                        .maxTokens(5000)
+                        .maxTokens(10000)
                         .temperature(0.2)
                         .topP(1)
                         .build());
